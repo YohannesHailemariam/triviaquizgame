@@ -10,8 +10,8 @@ function App() {
       {/*<div 
       className=' clickme grid place-items-center mt-[350px] '>
         <ButtonComp text='Attemp Quiz'/></div>*/}
-        {/*<Questions />*/}
-        <QuestionCard />
+        <Questions />
+      {/*        <QuestionCard />*/}
     </div>
     
   )
