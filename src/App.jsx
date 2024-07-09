@@ -11,7 +11,6 @@ function App() {
       className=' clickme grid place-items-center mt-[350px] '>
         <ButtonComp text='Attemp Quiz'/></div>*/}
         <Questions />
-      {/*        <QuestionCard />*/}
     </div>
     
   )

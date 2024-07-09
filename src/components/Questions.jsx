@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import QuestionCard from './QuestionCard';
-import Pagination from './Pagination';
 import ButtonComp from './ButtonComp';
 
 const Questions = () => {
@@ -70,6 +69,7 @@ const Questions = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [direction, setDirection] = useState(0); // Track animation direction
   const [result, setResult] = useState(0); // Track correct answers
+  const [gameStarted, setGameStarted] = useState(false); // Track if the game has started
   const itemsPerPage = 1; // Display one question per page
 
   const handlePageChange = (page) => {
@@ -86,24 +86,69 @@ const Questions = () => {
     }
   };
 
+  const handleRestart = () => {
+    setCurrentPage(1);
+    setResult(0);
+  };
+
+  // Determine if all questions have been answered
+  const allQuestionsAnswered = currentPage > totalPages;
+
   return (
     <div className="flex flex-col items-center justify-center h-screen mt-[-100px] overflow-hidden">
-      <div className="relative w-full h-[500px]">
-        {displayedQuestions.map((question) => (
-          <QuestionCard
-            key={question.questionNumber}
-            questionNumber={question.questionNumber}
-            question={question.question}
-            choices={question.choices}
-            correctAnswer={question.answer}
-            onClick={(choice) => handleChoiceClick(choice, question.answer)}
-          />
-        ))
-        }
-      </div>
-      <ButtonComp text='Submit'/>
-      <div><Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} /></div>
-      
+      {!gameStarted ? (
+        <div className="flex flex-col items-center justify-center h-full">
+          <button
+            className="bg-blue-500 text-white font-bold py-4 px-8 rounded-full shadow-lg hover:bg-blue-700 transition duration-300"
+            onClick={() => setGameStarted(true)}
+          >
+            Start Game
+          </button>
+        </div>
+      ) : (
+        <div className="relative w-full h-full flex flex-col items-center justify-center">
+          <div className="relative w-full h-[500px]">
+            {allQuestionsAnswered ? (
+              <div className="text-3xl font-bold text-center bg-blue-100 w-fit ml-[600px] mt-[230px] p-8 rounded-lg shadow-lg">
+                <p className="text-blue-600">Your score:</p>
+                <p className="text-blue-800 text-5xl">{result} / 10</p>
+                <button
+                  className="mt-4 bg-blue-500 text-white font-bold py-2 px-4 rounded-full shadow-lg hover:bg-blue-700 transition duration-300"
+                  onClick={handleRestart}
+                >
+                  Restart Game
+                </button>
+              </div>
+            ) : (
+              displayedQuestions.map((question) => (
+                <QuestionCard
+                  key={question.questionNumber}
+                  questionNumber={question.questionNumber}
+                  question={question.question}
+                  choices={question.choices}
+                  correctAnswer={question.answer}
+                  onClick={(choice) => handleChoiceClick(choice, question.answer)}
+                />
+              ))
+            )}
+          </div>
+          <div className='grid grid-cols-2 gap-5'>
+            {!allQuestionsAnswered && (
+              <ButtonComp 
+                text="Previous Question" 
+                onClick={() => handlePageChange(currentPage - 1)} 
+                disabled={currentPage === 1} 
+              />
+            )}
+            {!allQuestionsAnswered && (
+              <ButtonComp 
+                text="Next Question" 
+                onClick={() => handlePageChange(currentPage + 1)} 
+              />
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
