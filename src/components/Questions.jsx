@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import QuestionCard from './QuestionCard';
+import Pagination from './Pagination';
+import ButtonComp from './ButtonComp';
 
 const Questions = () => {
   const quizData = [
@@ -65,7 +67,18 @@ const Questions = () => {
     }
   ];
 
-  const [result, setResult] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [direction, setDirection] = useState(0); // Track animation direction
+  const [result, setResult] = useState(0); // Track correct answers
+  const itemsPerPage = 1; // Display one question per page
+
+  const handlePageChange = (page) => {
+    setDirection(page > currentPage ? 1 : -1);
+    setCurrentPage(page);
+  };
+
+  const totalPages = Math.ceil(quizData.length / itemsPerPage);
+  const displayedQuestions = quizData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   const handleChoiceClick = (choice, correctAnswer) => {
     if (choice === correctAnswer) {
@@ -74,17 +87,23 @@ const Questions = () => {
   };
 
   return (
-    <div>
-      {quizData.map((item) => (
-        <QuestionCard 
-          key={item.questionNumber}
-          questionNumber={item.questionNumber}
-          question={item.question}
-          choices={item.choices}
-          correctAnswer={item.answer}
-          onClick={(choice) => handleChoiceClick(choice, item.answer)}
-        />
-      ))}
+    <div className="flex flex-col items-center justify-center h-screen mt-[-100px] overflow-hidden">
+      <div className="relative w-full h-[500px]">
+        {displayedQuestions.map((question) => (
+          <QuestionCard
+            key={question.questionNumber}
+            questionNumber={question.questionNumber}
+            question={question.question}
+            choices={question.choices}
+            correctAnswer={question.answer}
+            onClick={(choice) => handleChoiceClick(choice, question.answer)}
+          />
+        ))
+        }
+      </div>
+      <ButtonComp text='Submit'/>
+      <div><Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} /></div>
+      
     </div>
   );
 };
