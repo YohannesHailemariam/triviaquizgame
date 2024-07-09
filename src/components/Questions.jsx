@@ -73,6 +73,7 @@ const Questions = () => {
   const itemsPerPage = 1; // Display one question per page
 
   const handlePageChange = (page) => {
+    if (page < 1) return; // Prevent going below question 1
     setDirection(page > currentPage ? 1 : -1);
     setCurrentPage(page);
   };
@@ -89,6 +90,7 @@ const Questions = () => {
   const handleRestart = () => {
     setCurrentPage(1);
     setResult(0);
+    setGameStarted(true); // Ensure the game remains started
   };
 
   // Determine if all questions have been answered
@@ -109,7 +111,7 @@ const Questions = () => {
         <div className="relative w-full h-full flex flex-col items-center justify-center">
           <div className="relative w-full h-[500px]">
             {allQuestionsAnswered ? (
-              <div className="text-3xl font-bold text-center bg-blue-100 w-fit ml-[600px] mt-[230px] p-8 rounded-lg shadow-lg">
+              <div className="text-3xl font-bold text-center bg-blue-100 p-8 w-fit ml-[550px] mt-[250px] rounded-lg shadow-lg">
                 <p className="text-blue-600">Your score:</p>
                 <p className="text-blue-800 text-5xl">{result} / 10</p>
                 <button
